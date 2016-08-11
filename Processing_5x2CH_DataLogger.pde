@@ -14,20 +14,24 @@
 import controlP5.*;
 
 ControlP5 cp5;
-Chart myChart;
+Chart DataChart;
+Chart TempChart;
 Println console;
 Textarea myTextarea;
 
 PFont   font1;                        // Шрифты
 color   bgcolor = color(10,30,50);    //Основной фон
 
-int grx_1 = 50; int gry_1 = 300;
-int grx_2 = 200; int gry_2 = 300;
+int grx_1 = 20; int gry_1 = 500;
+int grx_2 = 170; int gry_2 = 500;
+int grx_3 = 320; int gry_3 = 500;
+int grx_4 = 470; int gry_4 = 500;
+int grx_5 = 620; int gry_5 = 500;
 
 
 void setup() {
 //---------------------------------------------------------------------------   
-  size(700,400);
+  size(760,600);
   font1 = loadFont("Impact-12.vlw");          // Подключаем шрифт
 //---------------------------------------------------------------------------   
   CColor butcol = new CColor();
@@ -161,30 +165,252 @@ void setup() {
      .setFont(createFont("fontawesome-webfont.ttf", 20))
      .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
      ; 
+//------------------------------------------------------------------ CH3
+  cp5.addIcon("vis_voc_ch3",10)
+      .setPosition(grx_3+30,gry_3)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcons(#00f06E,#00f070).setScale(0.9,1).setSwitch(true).setColor(butcol).showBackground().setOn()
+     ;   
+  cp5.addIcon("plus_voc_ch3",10)
+     .setPosition(grx_3,gry_3+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f067).setScale(0.9,1).setColor(butcol).showBackground()
+     ;  
+  cp5.addIcon("minus_voc_ch3",10)
+     .setPosition(grx_3,gry_3+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f068).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("up_voc_ch3",10)
+     .setPosition(grx_3+30,gry_3+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f102).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("down_voc_ch3",10)
+     .setPosition(grx_3+30,gry_3+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+//***********************************//   
+  cp5.addIcon("vis_tmp_ch3",10)
+      .setPosition(70+grx_3+30,gry_3)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcons(#00f06E,#00f070).setScale(0.9,1).setSwitch(true).setColor(butcol).showBackground().setOn()
+     ;   
+  cp5.addIcon("plus_tmp_ch3",10)
+     .setPosition(70+grx_3,gry_3+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f067).setScale(0.9,1).setColor(butcol).showBackground()
+     ;  
+  cp5.addIcon("minus_tmp_ch3",10)
+     .setPosition(70+grx_3,gry_3+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f068).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("up_tmp_ch3",10)
+     .setPosition(70+grx_3+30,gry_3+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f102).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("down_tmp_ch3",10)
+     .setPosition(70+grx_3+30,gry_3+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+//------------------------------------------------------------------ CH4
+  cp5.addIcon("vis_voc_ch4",10)
+      .setPosition(grx_4+30,gry_4)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcons(#00f06E,#00f070).setScale(0.9,1).setSwitch(true).setColor(butcol).showBackground().setOn()
+     ;   
+  cp5.addIcon("plus_voc_ch4",10)
+     .setPosition(grx_4,gry_4+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f067).setScale(0.9,1).setColor(butcol).showBackground()
+     ;  
+  cp5.addIcon("minus_voc_ch4",10)
+     .setPosition(grx_4,gry_4+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f068).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("up_voc_ch4",10)
+     .setPosition(grx_4+30,gry_4+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f102).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("down_voc_ch4",10)
+     .setPosition(grx_4+30,gry_4+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+//***********************************//   
+  cp5.addIcon("vis_tmp_ch4",10)
+      .setPosition(70+grx_4+30,gry_4)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcons(#00f06E,#00f070).setScale(0.9,1).setSwitch(true).setColor(butcol).showBackground().setOn()
+     ;   
+  cp5.addIcon("plus_tmp_ch4",10)
+     .setPosition(70+grx_4,gry_4+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f067).setScale(0.9,1).setColor(butcol).showBackground()
+     ;  
+  cp5.addIcon("minus_tmp_ch4",10)
+     .setPosition(70+grx_4,gry_4+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f068).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("up_tmp_ch4",10)
+     .setPosition(70+grx_4+30,gry_4+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f102).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("down_tmp_ch4",10)
+     .setPosition(70+grx_4+30,gry_4+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+//------------------------------------------------------------------ CH5
+  cp5.addIcon("vis_voc_ch5",10)
+      .setPosition(grx_5+30,gry_5)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcons(#00f06E,#00f070).setScale(0.9,1).setSwitch(true).setColor(butcol).showBackground().setOn()
+     ;   
+  cp5.addIcon("plus_voc_ch5",10)
+     .setPosition(grx_5,gry_5+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f067).setScale(0.9,1).setColor(butcol).showBackground()
+     ;  
+  cp5.addIcon("minus_voc_ch5",10)
+     .setPosition(grx_5,gry_5+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f068).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("up_voc_ch5",10)
+     .setPosition(grx_5+30,gry_5+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f102).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("down_voc_ch5",10)
+     .setPosition(grx_5+30,gry_5+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+//***********************************//   
+  cp5.addIcon("vis_tmp_ch5",10)
+      .setPosition(70+grx_5+30,gry_5)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcons(#00f06E,#00f070).setScale(0.9,1).setSwitch(true).setColor(butcol).showBackground().setOn()
+     ;   
+  cp5.addIcon("plus_tmp_ch5",10)
+     .setPosition(70+grx_5,gry_5+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f067).setScale(0.9,1).setColor(butcol).showBackground()
+     ;  
+  cp5.addIcon("minus_tmp_ch5",10)
+     .setPosition(70+grx_5,gry_5+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f068).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("up_tmp_ch5",10)
+     .setPosition(70+grx_5+30,gry_5+30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f102).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
+  cp5.addIcon("down_tmp_ch5",10)
+     .setPosition(70+grx_5+30,gry_5+60)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
+     ; 
 //################################################################################################ DATAFLOW    
-       myChart = cp5.addChart("dataflow")
-               .setPosition(50, 50)
-               .setSize(600, 200)
-               .setRange(0, 100)
-               .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
-               .setStrokeWeight(8)
-               .setColorCaptionLabel(bgcolor)
-               .setColorBackground(bgcolor);
-               ;
-
-  myChart.addDataSet("VOC_CH1");
-  myChart.setData("VOC_CH1", new float[500]);
-  myChart.setColors("VOC_CH1", color(255,0,0));
-  myChart.addDataSet("TMP_CH1");
-  myChart.setData("TMP_CH1", new float[500]);
-  myChart.setColors("TMP_CH1", color(255,0,0,100));
+     DataChart = cp5.addChart("dataflow")
+             .setPosition(20, 50)
+             .setSize(720, 300)
+             .setRange(0, 120)
+             .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
+             .setStrokeWeight(8)
+             .setColorCaptionLabel(bgcolor)
+             .setColorBackground(bgcolor);
+             ;
   
-  myChart.addDataSet("VOC_CH2");
-  myChart.setData("VOC_CH2", new float[500]);
-  myChart.setColors("VOC_CH2", color(0,255,0));
-  myChart.addDataSet("TMP_CH2");
-  myChart.setData("TMP_CH2", new float[500]);
-  myChart.setColors("TMP_CH2", color(0,255,0,100));
+    DataChart.addDataSet("VOC_CH1");
+    DataChart.setData("VOC_CH1", new float[500]);
+    DataChart.setColors("VOC_CH1", color(255,0,0));
+    DataChart.addDataSet("TMP_CH1");
+    DataChart.setData("TMP_CH1", new float[500]);
+    DataChart.setColors("TMP_CH1", color(255,0,0,100));
+    
+    DataChart.addDataSet("VOC_CH2");
+    DataChart.setData("VOC_CH2", new float[500]);
+    DataChart.setColors("VOC_CH2", color(0,255,0));
+    DataChart.addDataSet("TMP_CH2");
+    DataChart.setData("TMP_CH2", new float[500]);
+    DataChart.setColors("TMP_CH2", color(0,255,0,100));
+    
+    DataChart.addDataSet("VOC_CH3");
+    DataChart.setData("VOC_CH3", new float[500]);
+    DataChart.setColors("VOC_CH3", color(0,100,255));
+    DataChart.addDataSet("TMP_CH3");
+    DataChart.setData("TMP_CH3", new float[500]);
+    DataChart.setColors("TMP_CH3", color(0,100,255));
+    
+    DataChart.addDataSet("VOC_CH4");
+    DataChart.setData("VOC_CH4", new float[500]);
+    DataChart.setColors("VOC_CH4", color(255,255,0));
+    DataChart.addDataSet("TMP_CH4");
+    DataChart.setData("TMP_CH4", new float[500]);
+    DataChart.setColors("TMP_CH4", color(255,255,0,100));
+    
+    DataChart.addDataSet("VOC_CH5");
+    DataChart.setData("VOC_CH5", new float[500]);
+    DataChart.setColors("VOC_CH5", color(255,0,255));
+    DataChart.addDataSet("TMP_CH5");
+    DataChart.setData("TMP_CH5", new float[500]);
+    DataChart.setColors("TMP_CH5", color(255,0,255,100));
+//--------------------------------------------------------------    
+
+    TempChart = cp5.addChart("tempflow")
+       .setPosition(20, 370)
+       .setSize(720, 80)
+       .setRange(0, 100)
+       .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
+       .setStrokeWeight(8)
+       .setColorCaptionLabel(bgcolor)
+       .setColorBackground(bgcolor);
+       ;
+  
+    TempChart.addDataSet("temp");
+    TempChart.setData("temp", new float[500]);
+    TempChart.setColors("temp", color(255));
 //################################################################################################  
  /*
   myTextarea = cp5.addTextarea("txt")
@@ -204,14 +430,28 @@ void setup() {
 
 void draw() {
   background(bgcolor);
-  draw_ch_label(grx_1, gry_1, color(255,0,0), "CH1");
-  draw_ch_label(grx_2, gry_2, color(0,255,0), "CH2");
+  draw_ch_label(grx_1, gry_1, color(255,0,0,150), "CH1");
+  draw_ch_label(grx_2, gry_2, color(0,255,0,150), "CH2");
+  draw_ch_label(grx_3, gry_3, color(0,100,255,150), "CH3");
+  draw_ch_label(grx_4, gry_4, color(255,255,0,150), "CH4");
+  draw_ch_label(grx_5, gry_5, color(255,0,255,150), "CH5");
   
-  myChart.push("VOC_CH1", (sin(frameCount*0.1)*10)+30);
-  myChart.push("TMP_CH1", (sin(frameCount*0.2)*10)+20);
+  DataChart.push("VOC_CH1", (sin(frameCount*0.1)*2)+25+random(1));
+  DataChart.push("TMP_CH1", (sin(frameCount*0.2)*2)+30+random(1));
   
-  myChart.push("VOC_CH2", (sin(frameCount*0.1)*10)+70);
-  myChart.push("TMP_CH2", (sin(frameCount*0.2)*10)+60);
+  DataChart.push("VOC_CH2", (sin(frameCount*0.1)*2)+45+random(1));
+  DataChart.push("TMP_CH2", (sin(frameCount*0.2)*2)+50+random(1));
+  
+  DataChart.push("VOC_CH3", (sin(frameCount*0.1)*2)+65+random(1));
+  DataChart.push("TMP_CH3", (sin(frameCount*0.2)*2)+70+random(1));
+  
+  DataChart.push("VOC_CH4", (sin(frameCount*0.1)*2)+85+random(1));
+  DataChart.push("TMP_CH4", (sin(frameCount*0.2)*2)+90+random(1));
+  
+  DataChart.push("VOC_CH5", (sin(frameCount*0.1)*2)+105+random(1));
+  DataChart.push("TMP_CH5", (sin(frameCount*0.2)*2)+110+random(1));
+  
+  TempChart.push("temp", (sin(frameCount*0.01)*20)+20+random(3));
   
   //println((sin(frameCount*0.1)*10)+70+"\t"+(sin(frameCount*0.1)*10)+7);
   
