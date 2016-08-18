@@ -89,7 +89,7 @@ String outFilename = "log.txt";
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
 //---------------------------------------------------------------------------   
-  size(838,740);
+  size(838,700);
 //---------------------------------------------------------------------------  
   gry_1 = height-140;
   gry_2 = height-140;
@@ -476,12 +476,12 @@ void setup() {
 //################################################################################################ DATAFLOW    
      DataChart = cp5.addChart("dataflow")
              .setPosition(15, 20)
-             .setSize(805, 410)
+             .setSize(805, 370)
              .setRange(0, 100)
              .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
              .setStrokeWeight(8)
              .setColorCaptionLabel(bgcolor)
-             .setColorBackground(color(255,10));
+             .setColorBackground(color(255,10))
              ;
   
     DataChart.addDataSet("sen_CH1");
