@@ -10,13 +10,16 @@ Println console;
 Textarea myTextarea;
 //-----------------------------------------------------------------------------------------------
 String[]   sensors = {                 //  Массив обрабатываемых детекторов
-                      "D_SO2_3536",
-                      "D_SO2_3826",
-                      "D_VOC_0131",
-                      "D_VOC_0132",
-                      "D_CO2_2503",
-                      "D_tDS_1820",
+                      "GET_CH_1",
+                      "GET_CH_2",
+                      "GET_CH_3",
+                      "GET_CH_4",
+                      "GET_CH_5",
+                      "GET_TEMP",
                       };
+int        get_ch   = 0;                // Номер канала для запроса
+int        t_time   = 10;               // Таймаут между отсылкой запросов (#DEFINE)
+int        timeout  = t_time;           // Таймаут между отсылкой запросов
 //-----------------------------------------------------------------------------------------------
 Serial serial_port = null;              // the serial port
 String  serial_list;                    // list of serial ports
@@ -54,8 +57,12 @@ int       index = 0;                    //задается позиция где
 //boolean   update=false;
 int       coordID = 0;                  // Позиция в буфере графика
 
+int       ch_ID;                        // Полученный идентификатор канала
+
 float[]   voltage = new float[6];       // Массив-буфер для принятых значений напряжений по каналам
 float[]   tempere = new float[6];       // Массив-буфер для принятых значений температуры по каналам
+float     temperature;                  // Значение независимого температурного датчика
+
 
 float[]   sen_ch1 = new float[grBuf];   // Массив-буфер данных графика данных датчика
 float[]   tmp_ch1 = new float[grBuf];   // Массив-буфер данных графика температры датчика
@@ -67,7 +74,7 @@ float[]   sen_ch4 = new float[grBuf];   // Массив-буфер данных 
 float[]   tmp_ch4 = new float[grBuf];   // Массив-буфер данных графика температры датчика
 float[]   sen_ch5 = new float[grBuf];   // Массив-буфер данных графика данных датчика
 float[]   tmp_ch5 = new float[grBuf];   // Массив-буфер данных графика температры датчика
-
+float[]   temperb = new float[grBuf];   // Буфер значение независимого температурного датчика
 
 
 int[]   sen_scal = new int[6];          // Массив установок по масштабированию каналов данных сенсоров
@@ -78,7 +85,7 @@ int[]   tmp_vpos = new int[6];          // Массив установок по 
 boolean[]   sen_status = new boolean[6];       // Массив видимости каналов данных
 boolean[]   tmp_status = new boolean[6];       // Массив видимости каналов температуры
 
-int     temperature;                // Значение независимого температурного датчика
+
 int     ext_tmp_scal=1;             // Значение установки по масштабированию независимого температурного датчика
 int     ext_tmp_vpos=0;             // Значение установки по вертикальной позиции независимого температурного датчика
 //-----------------------------------------------------------------------------------------------
@@ -508,7 +515,7 @@ void setup() {
      .setFontIcon(#00f127).setScale(0.9,1).setColor(butcol).showBackground()
      ; 
 //################################################################################################  
-  cp5.addTextfield("input_1")
+  cp5.addTextfield("in_1")
      .setPosition(grx_1,gry_1-30)
      .setSize(92,20)
      .setFont(font1)
@@ -516,7 +523,7 @@ void setup() {
      .setColor(color(255))
      .setColorCaptionLabel(bgcolor)
      ;
-  cp5.addTextfield("input_2")
+  cp5.addTextfield("in_2")
      .setPosition(grx_2,gry_2-30)
      .setSize(92,20)
      .setFont(font1)
@@ -524,7 +531,7 @@ void setup() {
      .setColor(color(255))
      .setColorCaptionLabel(bgcolor)
      ;
-  cp5.addTextfield("input_3")
+  cp5.addTextfield("in_3")
      .setPosition(grx_3,gry_3-30)
      .setSize(92,20)
      .setFont(font1)
@@ -532,7 +539,7 @@ void setup() {
      .setColor(color(255))
      .setColorCaptionLabel(bgcolor)
      ;
-  cp5.addTextfield("input_4")
+  cp5.addTextfield("in_4")
      .setPosition(grx_4,gry_4-30)
      .setSize(92,20)
      .setFont(font1)
@@ -540,7 +547,7 @@ void setup() {
      .setColor(color(255))
      .setColorCaptionLabel(bgcolor)
      ;
-  cp5.addTextfield("input_5")
+  cp5.addTextfield("in_5")
      .setPosition(grx_5,gry_5-30)
      .setSize(92,20)
      .setFont(font1)
@@ -619,7 +626,11 @@ void draw() {
   background(bgcolor);
   image(img, 840, 500);
 //---------------------------------------------------------------------------------------------------------------------- 
-  
+ if (serial_port != null && timeout ==0){
+    serial_port.write(sensors[get_ch]);
+    if(get_ch<5){get_ch++;}else{get_ch=0;}
+    timeout  =  t_time;
+ }else{ if (serial_port != null){timeout--;}}
 //---------------------------------------------------------------------------------------------------------------------- 
 
   draw_ch_label(1, grx_1, gry_1, sColor_ch1, "CH1");
@@ -653,6 +664,9 @@ void draw() {
     }else{DataChart.push("sen_CH5", 0);}
     if(tmp_status[5]==true){DataChart.push("TMP_CH5", tmp_ch5[i]*(tmp_scal[5]*0.1)+tmp_vpos[5]);
     }else{DataChart.push("TMP_CH5", 0);}
+    
+    draw_temp_label(grx_t, gry_t);
+    TempChart.push("temp", (temperb[i]*ext_tmp_scal+ext_tmp_vpos));
 
   }
   /*
@@ -662,9 +676,7 @@ void draw() {
   Draw_triangles(4, sColor_ch4, tColor_ch4);
   Draw_triangles(5, sColor_ch5, tColor_ch5);
   */
-  
-  draw_temp_label(grx_t, gry_t);
-  TempChart.push("temp", ((sin(frameCount*0.01)*10)+10)*(ext_tmp_scal)+ext_tmp_vpos);
+
   
   //println((sin(frameCount*0.1)*10)+70+"\t"+(sin(frameCount*0.1)*10)+7);
 //----------------------------------------------------------------------------------------------------------------------  
@@ -759,13 +771,25 @@ void Draw_triangles(int n, color sCol, color tCol)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void serialEvent (Serial port)
 {
+   data = port.readStringUntil ('\n');
+   String[] list = split(data, '\u0009');
   
-  data = port.readStringUntil ('\n');
-  data = data.substring(0, data.length() - 2);
-  
-  for(int i=1;i<=5;i++){voltage[i]=random(1,4);}
-  for(int i=1;i<=5;i++){tempere[i]=random(20,50);}
-  
+//  index = data.indexOf("\n");
+//  ch_ID = int(data.substring(0, index));
+//===========================================// 
+  if(list.length==3)
+  {
+    ch_ID = int(list[0]);
+    voltage[ch_ID] = float(list[1]);
+    tempere[ch_ID] = float(list[2]);
+  }
+//===========================================// 
+  if(list.length==2)
+  {
+    temperature = float(list[1]);
+  }
+//===========================================// 
+
   sen_ch1[coordID] = voltage[1];
   tmp_ch1[coordID] = tempere[1]; 
   sen_ch2[coordID] = voltage[2];
@@ -776,6 +800,8 @@ void serialEvent (Serial port)
   tmp_ch4[coordID] = tempere[4]; 
   sen_ch5[coordID] = voltage[5];
   tmp_ch5[coordID] = tempere[5]; 
+  temperb[coordID] = temperature;
+    
       coordID++;
       if(coordID>grBuf-1)
       {
@@ -792,6 +818,7 @@ void serialEvent (Serial port)
           tmp_ch4[i]=tmp_ch4[i+1];
           sen_ch5[i]=sen_ch5[i+1];
           tmp_ch5[i]=tmp_ch5[i+1];
+          temperb[i]=temperb[i+1];
         }
       }
   
@@ -801,6 +828,7 @@ void serialEvent (Serial port)
       + "\u0009" + voltage[3]+ "\u0009" + tempere[3]
       + "\u0009" + voltage[4]+ "\u0009" + tempere[4]
       + "\u0009" + voltage[5]+ "\u0009" + tempere[5]
+      + "\u0009" + temperature
       );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1035,4 +1063,21 @@ void up_sen_t() {
 }
 void down_sen_t() {
   ext_tmp_vpos-=10;
+}
+//=======================================================================
+//===================================================== INPUTs ==========
+void store_ch1() {
+  serial_port.write(cp5.get(Textfield.class,"in_1").getText());
+}
+void store_ch2() {
+  serial_port.write(cp5.get(Textfield.class,"in_2").getText());
+}
+void store_ch3() {
+  serial_port.write(cp5.get(Textfield.class,"in_3").getText());
+}
+void store_ch4() {
+  serial_port.write(cp5.get(Textfield.class,"in_4").getText());
+}
+void store_ch5() {
+  serial_port.write(cp5.get(Textfield.class,"in_5").getText());
 }
