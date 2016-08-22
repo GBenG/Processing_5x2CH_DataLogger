@@ -647,6 +647,7 @@ void draw() {
   draw_ch_label(3, grx_3, gry_3, sColor_ch3, "CH3");
   draw_ch_label(4, grx_4, gry_4, sColor_ch4, "CH4");
   draw_ch_label(5, grx_5, gry_5, sColor_ch5, "CH5");
+  draw_temp_label(grx_t, gry_t);
   
 //----------------------------------------------------------------------------------------------------------------------  
 
@@ -676,7 +677,6 @@ void draw() {
     if(tmp_status[5]==true){DataChart.push("TMP_CH5", tmp_ch5[i]*(tmp_scal[5]*0.1)+tmp_vpos[5]);
     }else{DataChart.push("TMP_CH5", 0);}
     
-    draw_temp_label(grx_t, gry_t);
     TempChart.push("temp", (temperb[i]*ext_tmp_scal+ext_tmp_vpos));
 
   }
