@@ -1,4 +1,4 @@
-import java.io.BufferedWriter;
+import java.io.BufferedWriter; //<>//
 import java.io.FileWriter;
 import processing.serial.*;
 import controlP5.*;
@@ -89,7 +89,7 @@ String outFilename = "log.txt";
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
 //---------------------------------------------------------------------------   
-  size(838,700);
+  size(1000,700);
 //---------------------------------------------------------------------------  
   gry_1 = height-140;
   gry_2 = height-140;
@@ -99,7 +99,7 @@ void setup() {
   gry_t = height-140;
 //---------------------------------------------------------------------------  
   font1 = loadFont("Impact-12.vlw");          // Подключаем шрифт
-  img = loadImage("logo.png");
+  img = loadImage("logo2.png");
 //---------------------------------------------------------------------------
   serial_list = Serial.list()[serial_list_index];
   num_serial_ports = Serial.list().length;
@@ -174,6 +174,13 @@ void setup() {
      .setFont(createFont("fontawesome-webfont.ttf", 20))
      .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
      ; 
+//***********************************//      
+  cp5.addIcon("store_ch1",10)
+     .setPosition(70+grx_1+30,gry_1-30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f090).setScale(0.9,1).setColor(butcol).showBackground()
+     ;     
 //------------------------------------------------------------------ CH2
   cp5.addIcon("vis_sen_ch2",10)
       .setPosition(grx_2+30,gry_2)
@@ -236,6 +243,13 @@ void setup() {
      .setFont(createFont("fontawesome-webfont.ttf", 20))
      .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
      ; 
+//***********************************//      
+  cp5.addIcon("store_ch2",10)
+     .setPosition(70+grx_2+30,gry_2-30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f090).setScale(0.9,1).setColor(butcol).showBackground()
+     ;    
 //------------------------------------------------------------------ CH3
   cp5.addIcon("vis_sen_ch3",10)
       .setPosition(grx_3+30,gry_3)
@@ -298,6 +312,13 @@ void setup() {
      .setFont(createFont("fontawesome-webfont.ttf", 20))
      .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
      ; 
+//***********************************//      
+  cp5.addIcon("store_ch3",10)
+     .setPosition(70+grx_3+30,gry_3-30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f090).setScale(0.9,1).setColor(butcol).showBackground()
+     ;    
 //------------------------------------------------------------------ CH4
   cp5.addIcon("vis_sen_ch4",10)
       .setPosition(grx_4+30,gry_4)
@@ -360,6 +381,13 @@ void setup() {
      .setFont(createFont("fontawesome-webfont.ttf", 20))
      .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
      ; 
+//***********************************//      
+  cp5.addIcon("store_ch4",10)
+     .setPosition(70+grx_4+30,gry_4-30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f090).setScale(0.9,1).setColor(butcol).showBackground()
+     ;    
 //------------------------------------------------------------------ CH5
   cp5.addIcon("vis_sen_ch5",10)
       .setPosition(grx_5+30,gry_5)
@@ -422,7 +450,13 @@ void setup() {
      .setFont(createFont("fontawesome-webfont.ttf", 20))
      .setFontIcon(#00f103).setScale(0.9,1).setColor(butcol).showBackground()
      ; 
-
+//***********************************//      
+  cp5.addIcon("store_ch5",10)
+     .setPosition(70+grx_5+30,gry_5-30)
+     .setSize(22,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcon(#00f090).setScale(0.9,1).setColor(butcol).showBackground()
+     ;    
 //------------------------------------------------------------------ TEMPERATURE
   cp5.addIcon("plus_sen_t",10)
      .setPosition(grx_t,gry_t+30)
@@ -473,10 +507,51 @@ void setup() {
      .setFont(createFont("fontawesome-webfont.ttf", 12))
      .setFontIcon(#00f127).setScale(0.9,1).setColor(butcol).showBackground()
      ; 
+//################################################################################################  
+  cp5.addTextfield("input_1")
+     .setPosition(grx_1,gry_1-30)
+     .setSize(92,20)
+     .setFont(font1)
+     .setColorCursor(color(255)) 
+     .setColor(color(255))
+     .setColorCaptionLabel(bgcolor)
+     ;
+  cp5.addTextfield("input_2")
+     .setPosition(grx_2,gry_2-30)
+     .setSize(92,20)
+     .setFont(font1)
+     .setColorCursor(color(255)) 
+     .setColor(color(255))
+     .setColorCaptionLabel(bgcolor)
+     ;
+  cp5.addTextfield("input_3")
+     .setPosition(grx_3,gry_3-30)
+     .setSize(92,20)
+     .setFont(font1)
+     .setColorCursor(color(255)) 
+     .setColor(color(255))
+     .setColorCaptionLabel(bgcolor)
+     ;
+  cp5.addTextfield("input_4")
+     .setPosition(grx_4,gry_4-30)
+     .setSize(92,20)
+     .setFont(font1)
+     .setColorCursor(color(255)) 
+     .setColor(color(255))
+     .setColorCaptionLabel(bgcolor)
+     ;
+  cp5.addTextfield("input_5")
+     .setPosition(grx_5,gry_5-30)
+     .setSize(92,20)
+     .setFont(font1)
+     .setColorCursor(color(255)) 
+     .setColor(color(255))
+     .setColorCaptionLabel(bgcolor)
+     ;
 //################################################################################################ DATAFLOW    
      DataChart = cp5.addChart("dataflow")
              .setPosition(15, 20)
-             .setSize(805, 370)
+             .setSize(968, 370)
              .setRange(0, 100)
              .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
              .setStrokeWeight(8)
@@ -522,7 +597,7 @@ void setup() {
 
     TempChart = cp5.addChart("tempflow")
        .setPosition(15, height-290)
-       .setSize(805, 100)
+       .setSize(968, 75)
        .setRange(0, 100)
        .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
        .setStrokeWeight(8)
@@ -533,20 +608,6 @@ void setup() {
     TempChart.addDataSet("temp");
     TempChart.setData("temp", new float[grBuf]);
     TempChart.setColors("temp", color(255));
-//################################################################################################  
- /*
-  myTextarea = cp5.addTextarea("txt")
-                  .setPosition(400, 280)
-                  .setSize(200, 100)
-                  .setFont(createFont("", 10))
-                  .setLineHeight(14)
-                  .setColor(color(200))
-                  .setColorBackground(color(0, 100))
-                  .setColorForeground(color(255, 100));
-  ;
-
-  console = cp5.addConsole(myTextarea);//
-  */
 //################################################################################################ 
   for(int i=1;i<=5;i++){sen_scal[i]=1; tmp_scal[i]=1;}  // Все масштабы начинаются с 1
   for(int i=1;i<=5;i++){sen_vpos[i]=50;}  // Все масштабы начинаются с 1
@@ -556,9 +617,9 @@ void setup() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void draw() {
   background(bgcolor);
-  image(img, 100, 125);
+  image(img, 840, 500);
 //---------------------------------------------------------------------------------------------------------------------- 
-   //<>//
+  
 //---------------------------------------------------------------------------------------------------------------------- 
 
   draw_ch_label(1, grx_1, gry_1, sColor_ch1, "CH1");
@@ -651,9 +712,9 @@ void draw_ch_label(int n, int x, int y, color lcolor, String label)
   text(round(tempere[n])+"\u00B0C",x+100,y+105);
   textAlign(LEFT);
   fill(lcolor);
-  rect(x,y-30,122,22,5);
+  rect(x,y-60,122,22,5);
   fill(bgcolor);
-  text(label,x+54,y-14);
+  text(label,x+54,y-44);
   stroke(255,200);
   line(x+60,y+0,x+60,y+82);
   noStroke();
@@ -674,9 +735,9 @@ void draw_temp_label(int x, int y)
   fill(255,75);
   text("0.00\u00B0C",x+14,y+105);
   fill(color(255,200));
-  rect(x,y-30,52,52,5);
+  rect(x,y-60,52,82,5);
   fill(bgcolor);
-  text("TEMP"+"\u00B0",x+12,y);
+  text("TEMP"+"\u00B0",x+12,y-15);
 }
 /**
   *************************************************************************************************
