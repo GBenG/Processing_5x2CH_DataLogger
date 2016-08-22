@@ -54,7 +54,6 @@ int grBuf = 100;                        // Кол-во точек хранимы
 //-----------------------------------------------------------------------------------------------
 String    data = "";                    //хранит строку целиком
 int       index = 0;                    //задается позиция где будет стоять разделитель
-//boolean   update=false;
 int       coordID = 0;                  // Позиция в буфере графика
 
 int       ch_ID;                        // Полученный идентификатор канала
@@ -77,17 +76,18 @@ float[]   tmp_ch5 = new float[grBuf];   // Массив-буфер данных 
 float[]   temperb = new float[grBuf];   // Буфер значение независимого температурного датчика
 
 
-int[]   sen_scal = new int[6];          // Массив установок по масштабированию каналов данных сенсоров
-int[]   sen_vpos = new int[6];          // Массив установок по вертикальной позиции каналов данных сенсоров
-int[]   tmp_scal = new int[6];          // Массив установок по масштабированию каналов температуры сенсоров
-int[]   tmp_vpos = new int[6];          // Массив установок по вертикальной позиции каналов температуры сенсоров
+int[]        sen_scal = new int[6];          // Массив установок по масштабированию каналов данных сенсоров
+int[]        sen_vpos = new int[6];          // Массив установок по вертикальной позиции каналов данных сенсоров
+int[]        tmp_scal = new int[6];          // Массив установок по масштабированию каналов температуры сенсоров
+int[]        tmp_vpos = new int[6];          // Массив установок по вертикальной позиции каналов температуры сенсоров
 
-boolean[]   sen_status = new boolean[6];       // Массив видимости каналов данных
-boolean[]   tmp_status = new boolean[6];       // Массив видимости каналов температуры
+boolean[]    sen_status = new boolean[6];    // Массив видимости каналов данных
+boolean[]    tmp_status = new boolean[6];    // Массив видимости каналов температуры
 
+int          ext_tmp_scal=1;                 // Значение установки по масштабированию независимого температурного датчика
+int          ext_tmp_vpos=0;                 // Значение установки по вертикальной позиции независимого температурного датчика
 
-int     ext_tmp_scal=1;             // Значение установки по масштабированию независимого температурного датчика
-int     ext_tmp_vpos=0;             // Значение установки по вертикальной позиции независимого температурного датчика
+boolean      inf_status=false;               // Показывать ли развернутую инфу возле курсора?
 //-----------------------------------------------------------------------------------------------
 String outFilename = "log.txt";
 //-----------------------------------------------------------------------------------------------
@@ -514,6 +514,13 @@ void setup() {
      .setFont(createFont("fontawesome-webfont.ttf", 12))
      .setFontIcon(#00f127).setScale(0.9,1).setColor(butcol).showBackground()
      ; 
+//------------------------------------------------------------------ SET INFO
+  cp5.addIcon("info",10)
+      .setPosition(grx_t,gry_t-60)
+     .setSize(52,22).setRoundedCorners(5)
+     .setFont(createFont("fontawesome-webfont.ttf", 20))
+     .setFontIcons(#00f05E, #00f0AE).setScale(0.9,1).setSwitch(true).setColor(butcol).showBackground().setOff()
+     ;  
 //################################################################################################  
   cp5.addTextfield("in_1")
      .setPosition(grx_1,gry_1-30)
@@ -617,7 +624,7 @@ void setup() {
     TempChart.setColors("temp", color(255));
 //################################################################################################ 
   for(int i=1;i<=5;i++){sen_scal[i]=1; tmp_scal[i]=1;}  // Все масштабы начинаются с 1
-  for(int i=1;i<=5;i++){sen_vpos[i]=50;}  // Все масштабы начинаются с 1
+  for(int i=1;i<=5;i++){sen_vpos[i]=50;tmp_vpos[i]=10;}  // Все позиции начинаются с 1
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////// DRAW ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -626,11 +633,13 @@ void draw() {
   background(bgcolor);
   image(img, 840, 500);
 //---------------------------------------------------------------------------------------------------------------------- 
+
  if (serial_port != null && timeout ==0){
     serial_port.write(sensors[get_ch]);
     if(get_ch<5){get_ch++;}else{get_ch=0;}
     timeout  =  t_time;
  }else{ if (serial_port != null){timeout--;}}
+ 
 //---------------------------------------------------------------------------------------------------------------------- 
 
   draw_ch_label(1, grx_1, gry_1, sColor_ch1, "CH1");
@@ -639,6 +648,8 @@ void draw() {
   draw_ch_label(4, grx_4, gry_4, sColor_ch4, "CH4");
   draw_ch_label(5, grx_5, gry_5, sColor_ch5, "CH5");
   
+//----------------------------------------------------------------------------------------------------------------------  
+
   for(int i=0;i<grBuf;i++){
     if(sen_status[1]==true){DataChart.push("sen_CH1", sen_ch1[i]*sen_scal[1]+sen_vpos[1]);
     }else{DataChart.push("sen_CH1", 0);}
@@ -669,16 +680,46 @@ void draw() {
     TempChart.push("temp", (temperb[i]*ext_tmp_scal+ext_tmp_vpos));
 
   }
-  /*
+//----------------------------------------------------------------------------------------------------------------------    
   Draw_triangles(1, sColor_ch1, tColor_ch1);
   Draw_triangles(2, sColor_ch2, tColor_ch2);
   Draw_triangles(3, sColor_ch3, tColor_ch3);
   Draw_triangles(4, sColor_ch4, tColor_ch4);
   Draw_triangles(5, sColor_ch5, tColor_ch5);
-  */
+//----------------------------------------------------------------------------------------------------------------------  
 
+  stroke(255,20);
+  if(mouseX >15 && mouseX < width-20 && mouseY > 20 && mouseY < height-310){     // Отрисовуем курсорную линию и значения измерений
+    line(mouseX,20,mouseX,height-310);
+    line(mouseX,height-290,mouseX,height-215);
+    
+    if(inf_status == true){
+      
+      fill(sColor_ch1);
+      if(sen_status[1]==true)text(sen_ch1[int(map(mouseX-15,0,968,0,grBuf))]+" v",mouseX+20,mouseY+10);
+      if(tmp_status[1]==true)text(tmp_ch1[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+50,mouseY+10);
+      
+      fill(sColor_ch2);
+      if(sen_status[2]==true)text(sen_ch2[int(map(mouseX-15,0,968,0,grBuf))]+" v",mouseX+20,mouseY+22);
+      if(tmp_status[2]==true)text(tmp_ch2[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+50,mouseY+22);
+      
+      fill(sColor_ch3);
+      if(sen_status[3]==true)text(sen_ch3[int(map(mouseX-15,0,968,0,grBuf))]+" v",mouseX+20,mouseY+34);
+      if(tmp_status[3]==true)text(tmp_ch3[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+50,mouseY+34);
+      
+      fill(sColor_ch4);
+      if(sen_status[4]==true)text(sen_ch4[int(map(mouseX-15,0,968,0,grBuf))]+" v",mouseX+20,mouseY+46);
+      if(tmp_status[4]==true)text(tmp_ch4[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+50,mouseY+46);
+      
+      fill(sColor_ch5);
+      if(sen_status[5]==true)text(sen_ch5[int(map(mouseX-15,0,968,0,grBuf))]+" v",mouseX+20,mouseY+58);
+      if(tmp_status[5]==true)text(tmp_ch5[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+50,mouseY+58);
+      
+      fill(255);
+      text(temperb[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+20,mouseY+70);
+    }
+  }
   
-  //println((sin(frameCount*0.1)*10)+70+"\t"+(sin(frameCount*0.1)*10)+7);
 //----------------------------------------------------------------------------------------------------------------------  
   fill(255);
   stroke(255);                                                // Отрисовываем линии разделения
@@ -745,11 +786,11 @@ void draw_temp_label(int x, int y)
 {
   textFont(font1);
   fill(255,75);
-  text("0.00\u00B0C",x+14,y+105);
+  text(temperature+"\u00B0C",x+14,y+105);
   fill(color(255,200));
-  rect(x,y-60,52,82,5);
+  rect(x,y-30,52,52,5);
   fill(bgcolor);
-  text("TEMP"+"\u00B0",x+12,y-15);
+  text("TEMP"+"\u00B0",x+12,y);
 }
 /**
   *************************************************************************************************
@@ -763,8 +804,16 @@ void draw_temp_label(int x, int y)
  */
 void Draw_triangles(int n, color sCol, color tCol)
 {
-  fill(sCol);triangle(820, 430-sen_vpos[n], 830, 430-sen_vpos[n]+5, 830, 430-sen_vpos[n]-5);
-  fill(tCol);triangle(820, 430-tmp_vpos[n], 830, 430-tmp_vpos[n]+5, 830, 430-tmp_vpos[n]-5);
+  float  y_sen = map(100-sen_vpos[n],0,100,0,370)+20;
+  float  y_tmp = map(100-tmp_vpos[n],0,100,0,370)+20;
+  
+  fill(sCol);triangle(width-17, y_sen, width-7, y_sen+5, width-7, y_sen-5);
+  fill(tCol);triangle(width-17, y_tmp, width-7, y_tmp+5, width-7, y_tmp-5);
+  
+  // горизонтальная линия нуля
+  stroke(255,20);
+  line(15,y_sen,width-17,y_sen);  
+  line(15,y_tmp,width-17,y_tmp);  
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SERIAL EVENT
@@ -897,10 +946,10 @@ void minus_sen_ch1() {
   if(sen_scal[1]>1)sen_scal[1]--;
 }
 void up_sen_ch1() {
-  if(sen_vpos[1]<410)sen_vpos[1]+=10;
+  if(sen_vpos[1]<100)sen_vpos[1]+=10;
 }
 void down_sen_ch1() {
-  sen_vpos[1]-=10;
+  if(sen_vpos[1]>1)sen_vpos[1]-=10;
 }
 //-----------------------------------------
 
@@ -914,10 +963,10 @@ void minus_tmp_ch1() {
   if(tmp_scal[1]>1)tmp_scal[1]--;
 }
 void up_tmp_ch1() {
-  if(tmp_vpos[1]<410)tmp_vpos[1]+=10;
+  if(tmp_vpos[1]<100)tmp_vpos[1]+=10;
 }
 void down_tmp_ch1() {
-  tmp_vpos[1]-=10;
+  if(tmp_vpos[1]>1)tmp_vpos[1]-=10;
 }
 //===================================================== CH2
 void vis_sen_ch2(boolean Status) {
@@ -930,10 +979,10 @@ void minus_sen_ch2() {
   if(sen_scal[2]>1)sen_scal[2]--;
 }
 void up_sen_ch2() {
-  if(sen_vpos[2]<410)sen_vpos[2]+=10;
+  if(sen_vpos[2]<100)sen_vpos[2]+=10;
 }
 void down_sen_ch2() {
-  sen_vpos[2]-=10;
+  if(sen_vpos[2]>1)sen_vpos[2]-=10;
 }
 //-----------------------------------------
 
@@ -947,10 +996,10 @@ void minus_tmp_ch2() {
   if(tmp_scal[2]>1)tmp_scal[2]--;
 }
 void up_tmp_ch2() {
-  if(tmp_vpos[2]<410)tmp_vpos[2]+=10;
+  if(tmp_vpos[2]<100)tmp_vpos[2]+=10;
 }
 void down_tmp_ch2() {
-  tmp_vpos[2]-=10;
+  if(tmp_vpos[2]>1)tmp_vpos[2]-=10;
 }
 //===================================================== CH3
 void vis_sen_ch3(boolean Status) {
@@ -963,10 +1012,10 @@ void minus_sen_ch3() {
   if(sen_scal[3]>1)sen_scal[3]--;
 }
 void up_sen_ch3() {
-  if(sen_vpos[3]<410)sen_vpos[3]+=10;
+  if(sen_vpos[3]<100)sen_vpos[3]+=10;
 }
 void down_sen_ch3() {
-  sen_vpos[3]-=10;
+  if(sen_vpos[3]>1)sen_vpos[3]-=10;
 }
 //-----------------------------------------
 
@@ -980,10 +1029,10 @@ void minus_tmp_ch3() {
   if(tmp_scal[3]>1)tmp_scal[3]--;
 }
 void up_tmp_ch3() {
-  if(tmp_vpos[3]<410)tmp_vpos[3]+=10;
+  if(tmp_vpos[3]<100)tmp_vpos[3]+=10;
 }
 void down_tmp_ch3() {
-  tmp_vpos[3]-=10;
+  if(tmp_vpos[3]>1)tmp_vpos[3]-=10;
 }
 //===================================================== CH4
 void vis_sen_ch4(boolean Status) {
@@ -996,10 +1045,10 @@ void minus_sen_ch4() {
   if(sen_scal[4]>1)sen_scal[4]--;
 }
 void up_sen_ch4() {
-  if(sen_vpos[4]<410)sen_vpos[4]+=10;
+  if(sen_vpos[4]<100)sen_vpos[4]+=10;
 }
 void down_sen_ch4() {
-  sen_vpos[4]-=10;
+  if(sen_vpos[4]>1)sen_vpos[4]-=10;
 }
 //-----------------------------------------
 
@@ -1013,10 +1062,10 @@ void minus_tmp_ch4() {
   if(tmp_scal[4]>1)tmp_scal[4]--;
 }
 void up_tmp_ch4() {
-  if(tmp_vpos[4]<410)tmp_vpos[4]+=10;
+  if(tmp_vpos[4]<100)tmp_vpos[4]+=10;
 }
 void down_tmp_ch4() {
-  tmp_vpos[4]-=10;
+  if(tmp_vpos[4]>1)tmp_vpos[4]-=10;
 }
 //===================================================== CH5
 void vis_sen_ch5(boolean Status) {
@@ -1029,10 +1078,10 @@ void minus_sen_ch5() {
   if(sen_scal[5]>1)sen_scal[5]--;
 }
 void up_sen_ch5() {
-  if(sen_vpos[5]<410)sen_vpos[5]+=10;
+  if(sen_vpos[5]<100)sen_vpos[5]+=10;
 }
 void down_sen_ch5() {
-  sen_vpos[5]-=10;
+  if(sen_vpos[5]>1)sen_vpos[5]-=10;
 }
 //-----------------------------------------
 
@@ -1046,10 +1095,10 @@ void minus_tmp_ch5() {
   if(tmp_scal[5]>1)tmp_scal[5]--;
 }
 void up_tmp_ch5() {
-  if(sen_vpos[1]<410)tmp_vpos[5]+=10;
+  if(tmp_vpos[5]<100)tmp_vpos[5]+=10;
 }
 void down_tmp_ch5() {
-  tmp_vpos[5]-=10;
+  if(tmp_vpos[5]>1)tmp_vpos[5]-=10;
 }
 //===================================================== EXT TEMPERATURE
 void plus_sen_t() {
@@ -1059,25 +1108,29 @@ void minus_sen_t() {
   if(ext_tmp_scal>1)ext_tmp_scal--;
 }
 void up_sen_t() {
-  if(ext_tmp_vpos<410)ext_tmp_vpos+=10;
+  if(ext_tmp_vpos<100)ext_tmp_vpos+=10;
 }
 void down_sen_t() {
   ext_tmp_vpos-=10;
 }
+//===================================================== INFO
+void info(boolean Status) {
+  inf_status=Status;
+}
 //=======================================================================
 //===================================================== INPUTs ==========
 void store_ch1() {
-  serial_port.write(cp5.get(Textfield.class,"in_1").getText());
+  serial_port.write("CLL_1_"+cp5.get(Textfield.class,"in_1").getText());
 }
 void store_ch2() {
-  serial_port.write(cp5.get(Textfield.class,"in_2").getText());
+  serial_port.write("CLL_2_"+cp5.get(Textfield.class,"in_2").getText());
 }
 void store_ch3() {
-  serial_port.write(cp5.get(Textfield.class,"in_3").getText());
+  serial_port.write("CLL_3_"+cp5.get(Textfield.class,"in_3").getText());
 }
 void store_ch4() {
-  serial_port.write(cp5.get(Textfield.class,"in_4").getText());
+  serial_port.write("CLL_4_"+cp5.get(Textfield.class,"in_4").getText());
 }
 void store_ch5() {
-  serial_port.write(cp5.get(Textfield.class,"in_5").getText());
+  serial_port.write("CLL_5_"+cp5.get(Textfield.class,"in_5").getText());
 }
