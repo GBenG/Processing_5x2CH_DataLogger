@@ -1,4 +1,4 @@
-import java.io.BufferedWriter; //<>//
+import java.io.BufferedWriter; //<>// //<>// //<>//
 import java.io.FileWriter;
 import processing.serial.*;
 import controlP5.*;
@@ -27,7 +27,7 @@ int     serial_list_index = 0;          // currently selected serial port
 int     num_serial_ports = 0;           // number of serial ports in the l
 //-----------------------------------------------------------------------------------------------
 PImage   img;
-PFont    font1;                         // Шрифты
+PFont    font1,font2;                   // Шрифты
 //-----------------------------------------------------------------------------------------------
 color   bgcolor = color(0,20,45);       //Основной фон
 
@@ -87,7 +87,12 @@ boolean[]    tmp_status = new boolean[6];    // Массив видимости 
 int          ext_tmp_scal=1;                 // Значение установки по масштабированию независимого температурного датчика
 int          ext_tmp_vpos=0;                 // Значение установки по вертикальной позиции независимого температурного датчика
 
-boolean      inf_status=false;               // Показывать ли развернутую инфу возле курсора?
+boolean      inf_status=false;               // Показывать ли развернутую инфу?
+//-----------------------------------------------------------------------------------------------
+int  shx = 90;                              // Дефайны доп инфы
+int  shy = 25;
+int  pvx = 840;
+int  pvy = 520;
 //-----------------------------------------------------------------------------------------------
 String outFilename = "log.txt";
 //-----------------------------------------------------------------------------------------------
@@ -106,6 +111,7 @@ void setup() {
   gry_t = height-140;
 //---------------------------------------------------------------------------  
   font1 = loadFont("Impact-12.vlw");          // Подключаем шрифт
+  font2 = loadFont("Impact-18.vlw");          // Подключаем шрифт
   img = loadImage("logo2.png");
 //---------------------------------------------------------------------------
   serial_list = Serial.list()[serial_list_index];
@@ -631,7 +637,7 @@ void setup() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void draw() {
   background(bgcolor);
-  image(img, 840, 500);
+  if(inf_status==false)image(img, 840, 500);
 //---------------------------------------------------------------------------------------------------------------------- 
 
  if (serial_port != null && timeout ==0){
@@ -694,35 +700,54 @@ void draw() {
     line(mouseX,height-290,mouseX,height-215);
     
     if(inf_status == true){
-      
-      fill(sColor_ch1);
-      if(sen_status[1]==true)text(sen_ch1[int(map(mouseX-15,0,968,0,grBuf))]+" v",mouseX+20,mouseY+10);
-      if(tmp_status[1]==true)text(tmp_ch1[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+50,mouseY+10);
-      
-      fill(sColor_ch2);
-      if(sen_status[2]==true)text(sen_ch2[int(map(mouseX-15,0,968,0,grBuf))]+" v",mouseX+20,mouseY+22);
-      if(tmp_status[2]==true)text(tmp_ch2[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+50,mouseY+22);
-      
-      fill(sColor_ch3);
-      if(sen_status[3]==true)text(sen_ch3[int(map(mouseX-15,0,968,0,grBuf))]+" v",mouseX+20,mouseY+34);
-      if(tmp_status[3]==true)text(tmp_ch3[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+50,mouseY+34);
-      
-      fill(sColor_ch4);
-      if(sen_status[4]==true)text(sen_ch4[int(map(mouseX-15,0,968,0,grBuf))]+" v",mouseX+20,mouseY+46);
-      if(tmp_status[4]==true)text(tmp_ch4[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+50,mouseY+46);
-      
-      fill(sColor_ch5);
-      if(sen_status[5]==true)text(sen_ch5[int(map(mouseX-15,0,968,0,grBuf))]+" v",mouseX+20,mouseY+58);
-      if(tmp_status[5]==true)text(tmp_ch5[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+50,mouseY+58);
-      
-      fill(255);
-      text(temperb[int(map(mouseX-15,0,968,0,grBuf))]+" \u00B0C",mouseX+20,mouseY+70);
+      textFont(font2);
+      fill(tColor_ch1);
+      text(nf(sen_ch1[int(map(mouseX-15,0,968,0,grBuf))],1,5)+" v"      ,  pvx,      pvy+shy*0);
+      text(nf(tmp_ch1[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*0);
+      fill(tColor_ch2);
+      text(nf(sen_ch2[int(map(mouseX-15,0,968,0,grBuf))],1,5)+" v"      ,  pvx,      pvy+shy*1);
+      text(nf(tmp_ch2[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*1);
+      fill(tColor_ch3);
+      text(nf(sen_ch3[int(map(mouseX-15,0,968,0,grBuf))],1,5)+" v"      ,  pvx,      pvy+shy*2);
+      text(nf(tmp_ch3[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*2);
+      fill(tColor_ch4);
+      text(nf(sen_ch4[int(map(mouseX-15,0,968,0,grBuf))],1,5)+" v"      ,  pvx,      pvy+shy*3);
+      text(nf(tmp_ch4[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*3);
+      fill(tColor_ch5);
+      text(nf(sen_ch5[int(map(mouseX-15,0,968,0,grBuf))],1,5)+" v"      ,  pvx,      pvy+shy*4);
+      text(nf(tmp_ch5[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*4);
+      fill(255,75);
+      text(nf(temperb[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*5);
     }
+  }else{
+   if(inf_status == true){
+      textFont(font2);
+      fill(tColor_ch1);
+      text("0.00000 v",     pvx,      pvy+shy*0);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*0);
+      fill(tColor_ch2);
+      text("0.00000 v",     pvx,      pvy+shy*1);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*1);
+      fill(tColor_ch3);
+      text("0.00000 v",     pvx,      pvy+shy*2);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*2);
+      fill(tColor_ch4);
+      text("0.00000 v",     pvx,      pvy+shy*3);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*3);
+      fill(tColor_ch5);
+      text("0.00000 v",     pvx,      pvy+shy*4);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*4);
+      fill(255,75);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*5);
+   }
   }
+  
+ 
   
 //----------------------------------------------------------------------------------------------------------------------  
   fill(255);
   stroke(255);                                                // Отрисовываем линии разделения
+  textFont(font1);
   line(0,height-22,width,height-22);     
   line(175,height,185,height-22);   
   line(width-120,height,width-110,height-22);   
