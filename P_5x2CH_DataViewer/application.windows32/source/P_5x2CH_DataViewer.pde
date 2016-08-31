@@ -1,4 +1,4 @@
-import java.io.BufferedWriter; //<>// //<>// //<>//
+import java.io.BufferedWriter; //<>// //<>//
 import java.io.FileWriter;
 import processing.serial.*;
 import controlP5.*;
@@ -8,6 +8,10 @@ Chart DataChart;
 Chart TempChart;
 Println console;
 Textarea myTextarea;
+Table table;
+
+int SLpos=0;
+int SLscal=1;
 //-----------------------------------------------------------------------------------------------
 String[]   sensors = {                 //  Массив обрабатываемых детекторов
                       "GET_CH_1 ",
@@ -29,7 +33,8 @@ int     num_serial_ports = 0;           // number of serial ports in the l
 PImage   img;
 PFont    font1,font2;                   // Шрифты
 //-----------------------------------------------------------------------------------------------
-color   bgcolor = color(0,20,45);       //Основной фон
+//color   bgcolor = color(0,20,45);       //Основной фон
+color   bgcolor = color(0,2,4);       //Основной фон
 
 color   sColor_ch1 = color(200,50,50,150);
 color   tColor_ch1 = color(200,50,50,75);
@@ -50,7 +55,7 @@ int grx_4 = 470; int gry_4;
 int grx_5 = 620; int gry_5;
 int grx_t = 770; int gry_t;
 
-int grBuf = 100;                        // Кол-во точек хранимых графиком
+int grBuf = 500;                        // Кол-во точек хранимых графиком
 //-----------------------------------------------------------------------------------------------
 String    data = "";                    //хранит строку целиком
 int       index = 0;                    //задается позиция где будет стоять разделитель
@@ -74,6 +79,8 @@ float[]   tmp_ch4 = new float[grBuf];   // Массив-буфер данных 
 float[]   sen_ch5 = new float[grBuf];   // Массив-буфер данных графика данных датчика
 float[]   tmp_ch5 = new float[grBuf];   // Массив-буфер данных графика температры датчика
 float[]   temperb = new float[grBuf];   // Буфер значение независимого температурного датчика
+
+String[]   time = new String[grBuf];
 
 
 int[]        sen_scal = new int[6];          // Массив установок по масштабированию каналов данных сенсоров
@@ -123,6 +130,9 @@ void setup() {
     butcol.setBackground(color(255,200));
 //---------------------------------------------------------------------------
 
+    table = loadTable("log.tsv", "header");
+    println(table.getRowCount() + " total rows in table"); 
+//---------------------------------------------------------------------------
   cp5 = new ControlP5(this);
   
 //------------------------------------------------------------------ CH1
@@ -525,7 +535,7 @@ void setup() {
       .setPosition(grx_t,gry_t-60)
      .setSize(52,22).setRoundedCorners(5)
      .setFont(createFont("fontawesome-webfont.ttf", 20))
-     .setFontIcons(#00f05E, #00f0AE).setScale(0.9,1).setSwitch(true).setColor(butcol).showBackground().setOff()
+     .setFontIcons(#00f05E, #00f0AE).setScale(0.9,1).setSwitch(true).setColor(butcol).showBackground().setOn()
      ;  
 //################################################################################################  
   cp5.addTextfield("in_1")
@@ -616,8 +626,8 @@ void setup() {
 //--------------------------------------------------------------    
 
     TempChart = cp5.addChart("tempflow")
-       .setPosition(15, height-290)
-       .setSize(968, 75)
+       .setPosition(15, height-280)
+       .setSize(968, 65)
        .setRange(0, 100)
        .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
        .setStrokeWeight(8)
@@ -628,6 +638,26 @@ void setup() {
     TempChart.addDataSet("temp");
     TempChart.setData("temp", new float[grBuf]);
     TempChart.setColors("temp", color(255));
+//################################################################################################ SLIDER        
+  cp5.addSlider("SL")
+     .setRange(0, table.getRowCount()-grBuf)
+     .setValue(0)
+     .setPosition(15, 400)
+     .setSize(width-102, 10)
+     .setSliderMode(Slider.FLEXIBLE)
+     ;
+  cp5.getController("SL").getValueLabel().setVisible(false);
+  cp5.getController("SL").getCaptionLabel().setVisible(false);
+  //################################################################################################ SCALER       
+  cp5.addSlider("SC")
+     .setRange(1, 10)
+     .setValue(1)
+     .setPosition(width-80, 400)
+     .setSize(62, 10)
+     .setSliderMode(Slider.FLEXIBLE)
+     ;
+  cp5.getController("SC").getValueLabel().setVisible(false);
+  cp5.getController("SC").getCaptionLabel().setVisible(false);
 //################################################################################################ 
   for(int i=1;i<=5;i++){sen_scal[i]=1; tmp_scal[i]=1;}  // Все масштабы начинаются с 1
   for(int i=1;i<=5;i++){sen_vpos[i]=0;tmp_vpos[i]=0;}  // Все позиции начинаются с 1
@@ -718,6 +748,11 @@ void draw() {
       //text(nf(tmp_ch5[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*4);
       fill(255,75);
       //text(nf(temperb[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*5);
+      
+      fill(255,200);
+      textFont(font2);
+      textAlign(CENTER);
+      //text(time[int(map(mouseX-15,0,968,0,grBuf))],  width/2,45);
     }
   }else{
    if(inf_status == true){
@@ -741,8 +776,52 @@ void draw() {
       //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*5);
    }
   }
-  
- 
+//----------------------------------------------------------------------------------------------------------------------   
+if (serial_port == null && (table.getRowCount()-SLpos)>grBuf*SLscal-1){
+   int  j=0;
+   for(int i=0;i<grBuf*SLscal;i+=SLscal){
+      
+    TableRow row = table.getRow(i+SLpos);
+    
+    String date = row.getString("time");
+    
+    String se1 = row.getString("se1");
+    String tm1 = row.getString("tm1");
+    
+    String se2 = row.getString("se2");
+    String tm2 = row.getString("tm2");
+    
+    String se3 = row.getString("se3");
+    String tm3 = row.getString("tm3");
+    
+    String se4 = row.getString("se4");
+    String tm4 = row.getString("tm4");
+    
+    String se5 = row.getString("se5");
+    String tm5 = row.getString("tm5");
+    
+    String tmp = row.getString("tmp");
+
+    sen_ch1[j] = float(se1);
+    sen_ch2[j] = float(se2);
+    sen_ch3[j] = float(se3);
+    sen_ch4[j] = float(se4);
+    sen_ch5[j] = float(se5);
+    
+    tmp_ch1[j] = float(tm1);
+    tmp_ch2[j] = float(tm2);
+    tmp_ch3[j] = float(tm3);
+    tmp_ch4[j] = float(tm4);
+    tmp_ch5[j] = float(tm5);
+    
+    temperb[j] = float(tmp);
+    
+    time[j]  =  date;
+    
+    j++;
+  } 
+}
+
   
 //----------------------------------------------------------------------------------------------------------------------  
   fill(255);
@@ -754,6 +833,7 @@ void draw() {
   textAlign(RIGHT);
   text(serial_list,55,height-6); 
   text(":: SPS TECH :: 2016 ::",width-4,height-5);            // Отрисовываем логотип
+  text("-^-^- DATA VIEWER -^-^- (Beta version)", width/2+60,height-5);            // Отрисовываем логотип
   textAlign(LEFT);
   noStroke();
 //---------------------------------------------------------------------------------------------------------------------- 
@@ -766,6 +846,15 @@ void draw() {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Functions ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/***************************************************************************************************/
+public void SL(float slider) {
+  SLpos = int(slider);
+}
+/***************************************************************************************************/
+public void SC(float slider) {
+  SLscal = int(slider);
+}
+/***************************************************************************************************/
 /**
   *************************************************************************************************
   * @brief      draw_ch_label
