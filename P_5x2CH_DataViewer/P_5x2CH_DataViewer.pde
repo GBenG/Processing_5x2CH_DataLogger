@@ -650,7 +650,7 @@ void setup() {
   cp5.getController("SL").getCaptionLabel().setVisible(false);
   //################################################################################################ SCALER       
   cp5.addSlider("SC")
-     .setRange(1, 10)
+     .setRange(1, table.getRowCount()/500)
      .setValue(1)
      .setPosition(width-80, 400)
      .setSize(62, 10)
@@ -667,7 +667,7 @@ void setup() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void draw() {
   background(bgcolor);
-  if(inf_status==false)image(img, 840, 500);
+  //if(inf_status==false)image(img, 840, 500);
 //---------------------------------------------------------------------------------------------------------------------- 
 
  if (serial_port != null && timeout ==0){
@@ -733,47 +733,49 @@ void draw() {
       textFont(font2);
       fill(sColor_ch1);
       text(nf(sen_ch1[int(map(mouseX-15,0,968,0,grBuf))],1,2)+" ppm"      ,  pvx,      pvy+shy*0);
-      //text(nf(tmp_ch1[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*0);
+      text(nf(tmp_ch1[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*0);
       fill(sColor_ch2);
       text(nf(sen_ch2[int(map(mouseX-15,0,968,0,grBuf))],1,2)+" ppm"      ,  pvx,      pvy+shy*1);
-      //text(nf(tmp_ch2[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*1);
+      text(nf(tmp_ch2[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*1);
       fill(sColor_ch3);
       text(nf(sen_ch3[int(map(mouseX-15,0,968,0,grBuf))],1,2)+" ppm"      ,  pvx,      pvy+shy*2);
-      //text(nf(tmp_ch3[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*2);
+      text(nf(tmp_ch3[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*2);
       fill(sColor_ch4);
       text(nf(sen_ch4[int(map(mouseX-15,0,968,0,grBuf))],1,2)+" ppm"      ,  pvx,      pvy+shy*3);
-      //text(nf(tmp_ch4[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*3);
+      text(nf(tmp_ch4[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*3);
       fill(sColor_ch5);
       text(nf(sen_ch5[int(map(mouseX-15,0,968,0,grBuf))],1,2)+" ppm"      ,  pvx,      pvy+shy*4);
-      //text(nf(tmp_ch5[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*4);
+      text(nf(tmp_ch5[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*4);
       fill(255,75);
-      //text(nf(temperb[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*5);
+      text(nf(temperb[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*5);
+      text("R: "+table.getRowCount(),  pvx,  pvy+shy*5);
       
       fill(255,200);
       textFont(font2);
       textAlign(CENTER);
-      //text(time[int(map(mouseX-15,0,968,0,grBuf))],  width/2,45);
+      text(time[int(map(mouseX-15,0,968,0,grBuf))],  width/2,45);
     }
   }else{
    if(inf_status == true){
       textFont(font2);
       fill(tColor_ch1);
       text(nf(voltage[1],1,2)+" ppm"      ,  pvx,      pvy+shy*0);
-      //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*0);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*0);
       fill(tColor_ch2);
       text(nf(voltage[2],1,2)+" ppm"      ,  pvx,      pvy+shy*1);
-      //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*1);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*1);
       fill(tColor_ch3);
       text(nf(voltage[3],1,2)+" ppm"      ,  pvx,      pvy+shy*2);
-      //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*2);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*2);
       fill(tColor_ch4);
       text(nf(voltage[4],1,2)+" ppm"      ,  pvx,      pvy+shy*3);
-      //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*3);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*3);
       fill(tColor_ch5);
       text(nf(voltage[5],1,2)+" ppm"      ,  pvx,      pvy+shy*4);
-      //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*4);
-      fill(255,75);
-      //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*5);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*4);
+      fill(255,50);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*5);
+      text("R: "+table.getRowCount(),  pvx,  pvy+shy*5);
    }
   }
 //----------------------------------------------------------------------------------------------------------------------   

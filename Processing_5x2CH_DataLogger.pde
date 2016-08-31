@@ -94,7 +94,7 @@ int  shy = 25;
 int  pvx = 840;
 int  pvy = 520;
 //-----------------------------------------------------------------------------------------------
-String outFilename = "log.txt";
+String outFilename = "log.tsv";
 //-----------------------------------------------------------------------------------------------
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////// SETUP ///////////////////////////////////////////////////
@@ -703,19 +703,19 @@ void draw() {
       textFont(font2);
       fill(sColor_ch1);
       text(nf(sen_ch1[int(map(mouseX-15,0,968,0,grBuf))],1,2)+" ppm"      ,  pvx,      pvy+shy*0);
-      //text(nf(tmp_ch1[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*0);
+      text(nf(tmp_ch1[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*0);
       fill(sColor_ch2);
       text(nf(sen_ch2[int(map(mouseX-15,0,968,0,grBuf))],1,2)+" ppm"      ,  pvx,      pvy+shy*1);
-      //text(nf(tmp_ch2[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*1);
+      text(nf(tmp_ch2[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*1);
       fill(sColor_ch3);
       text(nf(sen_ch3[int(map(mouseX-15,0,968,0,grBuf))],1,2)+" ppm"      ,  pvx,      pvy+shy*2);
-      //text(nf(tmp_ch3[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*2);
+      text(nf(tmp_ch3[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*2);
       fill(sColor_ch4);
       text(nf(sen_ch4[int(map(mouseX-15,0,968,0,grBuf))],1,2)+" ppm"      ,  pvx,      pvy+shy*3);
-      //text(nf(tmp_ch4[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*3);
+      text(nf(tmp_ch4[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*3);
       fill(sColor_ch5);
       text(nf(sen_ch5[int(map(mouseX-15,0,968,0,grBuf))],1,2)+" ppm"      ,  pvx,      pvy+shy*4);
-      //text(nf(tmp_ch5[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*4);
+      text(nf(tmp_ch5[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*4);
       fill(255,75);
       //text(nf(temperb[int(map(mouseX-15,0,968,0,grBuf))],2,1)+" \u00B0C",  pvx+shx,  pvy+shy*5);
     }
@@ -724,19 +724,19 @@ void draw() {
       textFont(font2);
       fill(tColor_ch1);
       text(nf(voltage[1],1,2)+" ppm"      ,  pvx,      pvy+shy*0);
-      //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*0);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*0);
       fill(tColor_ch2);
       text(nf(voltage[2],1,2)+" ppm"      ,  pvx,      pvy+shy*1);
-      //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*1);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*1);
       fill(tColor_ch3);
       text(nf(voltage[3],1,2)+" ppm"      ,  pvx,      pvy+shy*2);
-      //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*2);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*2);
       fill(tColor_ch4);
       text(nf(voltage[4],1,2)+" ppm"      ,  pvx,      pvy+shy*3);
-      //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*3);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*3);
       fill(tColor_ch5);
       text(nf(voltage[5],1,2)+" ppm"      ,  pvx,      pvy+shy*4);
-      //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*4);
+      text("00.0 \u00B0C",  pvx+shx,  pvy+shy*4);
       fill(255,75);
       //text("00.0 \u00B0C",  pvx+shx,  pvy+shy*5);
    }
@@ -856,8 +856,8 @@ void serialEvent (Serial port)
   if(list.length==3)
   {
     ch_ID = int(list[0]);
-    voltage[ch_ID] = float(list[1]);
-    tempere[ch_ID] = float(list[2]);
+    if(float(list[1])>0)  voltage[ch_ID] = float(list[1]);
+    if(float(list[2])>0)  tempere[ch_ID] = float(list[2]);
   }
 //===========================================// 
   if(list.length==2)
@@ -913,6 +913,7 @@ void appendTextToFile(String filename, String text){
   File f = new File(dataPath(filename));
   if(!f.exists()){
     createFile(f);
+    appendTextToFile(outFilename, "time\u0009se1\u0009tm1\u0009se2\u0009tm2\u0009se3\u0009tm3\u0009se4\u0009tm4\u0009se5\u0009tm5\u0009tmp");
   }
   try {
     PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
